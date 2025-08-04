@@ -48,7 +48,7 @@ graph TD
 
         ctrl_inv -->|POST /agregar| logic_inv
         ctrl_inv -->|PUT /comprar| logic_inv
-        ctrl_inv -->|GET /{productoId}| logic_inv
+        ctrl_inv -->|GET /productoId| logic_inv
         logic_inv --> db_inv
     end
 
