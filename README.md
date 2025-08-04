@@ -32,7 +32,7 @@ graph TD
         proxy_inv[Inventario Service]
 
         ctrl_prod -->|GET /productos| logic_prod
-        ctrl_prod -->|GET /productos/{id}| logic_prod
+        ctrl_prod -->|GET /productos/id| logic_prod
         ctrl_prod -->|GET /swagger-ui| logic_prod
         ctrl_prod -->|GET /v3/api-docs| logic_prod
         logic_prod --> db_prod
