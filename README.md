@@ -180,7 +180,7 @@ Pruebas de integración y unitarias se encuentran en las carpetas:
 
 Ambos servicios pueden contenerizarse con Docker.
 
-### Dockerfile (ejemplo básico)
+### Dockerfile
 
 ```dockerfile
 
@@ -200,7 +200,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 ```
 
-### docker-compose.yml (básico)
+### docker-compose.yml
 
 ```yaml
 
@@ -277,7 +277,7 @@ networks:
 ```
 ---
 
-*Despliegue*
+### Despliegue
 - docker compose up -d --build
 
 ---
