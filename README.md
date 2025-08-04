@@ -21,26 +21,40 @@ El sistema sigue una arquitectura basada en microservicios con responsabilidades
 
 Cada servicio cuenta con controladores, servicios, excepciones, DTOs y configuración propia.
 
-```graph TD
-    subgraph Productos_Service["Productos Service"]
-        A[Controlador] -->|GET /productos| B[Lógica de Negocio]
-        A -->|GET /productos/{id}| B
-        A -->|GET /swagger-ui| B
-        A -->|GET /v3/api-docs| B
-        B --> C[(Base de Datos)]
-        B --> D[Consulta Producto]
-        B --> E[API Key]
-        B --> F[Inventario Service]
+```mermaid
+graph TD
+    subgraph productos_service [Productos Service]
+        ctrl_prod[Controlador]
+        logic_prod[Lógica de Negocio]
+        db_prod[(Base de Datos)]
+        auth_prod[API Key]
+        feign_prod[Consulta Producto]
+        proxy_inv[Inventario Service]
+
+        ctrl_prod -->|GET /productos| logic_prod
+        ctrl_prod -->|GET /productos/{id}| logic_prod
+        ctrl_prod -->|GET /swagger-ui| logic_prod
+        ctrl_prod -->|GET /v3/api-docs| logic_prod
+        logic_prod --> db_prod
+        logic_prod --> feign_prod
+        logic_prod --> auth_prod
+        logic_prod --> proxy_inv
     end
 
-    subgraph Inventario_Service["Inventario Service"]
-        G[Controlador] -->|POST /agregar| H[Lógica de Negocio]
-        G -->|PUT /comprar| H
-        G -->|GET /{productoId}| H
-        H --> I[(Base de Datos)]
-        F --> G
+    subgraph inventario_service [Inventario Service]
+        ctrl_inv[Controlador]
+        logic_inv[Lógica de Negocio]
+        db_inv[(Base de Datos)]
+
+        ctrl_inv -->|POST /agregar| logic_inv
+        ctrl_inv -->|PUT /comprar| logic_inv
+        ctrl_inv -->|GET /{productoId}| logic_inv
+        logic_inv --> db_inv
     end
+
+    proxy_inv --> ctrl_inv
 ```
+
 
 ---
 
