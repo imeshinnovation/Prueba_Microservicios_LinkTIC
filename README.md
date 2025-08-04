@@ -23,26 +23,27 @@ Cada servicio cuenta con controladores, servicios, excepciones, DTOs y configura
 
 ```mermaid
 flowchart LR
-    subgraph Productos_Service [Productos Service]
-        PS_Controller[Controller<br>/productos<br>/productos/{id}<br>/swagger-ui<br>/v3/api-docs]
-        PS_Logic[Lógica de negocio]
-        PS_DB[Base de datos]
+    subgraph ProductosService [Productos Service]
+        PS_Controller[Controller (/productos)]
+        PS_Logic[Business Logic]
+        PS_DB[(Base de Datos)]
         PS_Controller --> PS_Logic --> PS_DB
     end
 
-    subgraph Inventario_Service [Inventario Service]
-        IS_Controller[Controller<br>/v1/inventario/agregar<br>/v1/inventario/compra<br>/v1/inventario/{productoId}]
-        IS_Logic[Lógica de negocio]
-        IS_DB[Base de datos]
+    subgraph InventarioService [Inventario Service]
+        IS_Controller[Controller (/v1/inventario/*)]
+        IS_Logic[Business Logic]
+        IS_DB[(Base de Datos)]
         IS_Controller --> IS_Logic --> IS_DB
     end
 
     IS_Logic -->|Consulta producto (Feign)| PS_Controller
 
     note right of PS_Controller
-        "Requiere API Key\nHeader: X-API-KEY"
+        API protegida con X-API-KEY
     end note
 ```
+
 
 
 
