@@ -21,27 +21,25 @@ El sistema sigue una arquitectura basada en microservicios con responsabilidades
 
 Cada servicio cuenta con controladores, servicios, excepciones, DTOs y configuración propia.
 
-```mermaid
-flowchart LR
-    subgraph productos_service [Productos Service]
-        ps_controller[controller: /productos]
-        ps_logic[business logic]
-        ps_db[(DB: productos)]
-        ps_controller --> ps_logic --> ps_db
+```graph TD
+    subgraph Productos_Service["Productos Service"]
+        A[Controlador] -->|GET /productos| B[Lógica de Negocio]
+        A -->|GET /productos/{id}| B
+        A -->|GET /swagger-ui| B
+        A -->|GET /v3/api-docs| B
+        B --> C[(Base de Datos)]
+        B --> D[Consulta Producto]
+        B --> E[API Key]
+        B --> F[Inventario Service]
     end
 
-    subgraph inventario_service [Inventario Service]
-        is_controller[controller: /v1/inventario/*]
-        is_logic[business logic]
-        is_db[(DB: inventario)]
-        is_controller --> is_logic --> is_db
+    subgraph Inventario_Service["Inventario Service"]
+        G[Controlador] -->|POST /agregar| H[Lógica de Negocio]
+        G -->|PUT /comprar| H
+        G -->|GET /{productoId}| H
+        H --> I[(Base de Datos)]
+        F --> G
     end
-
-    is_logic -->|Consulta producto (Feign)| ps_controller
-
-    note right of ps_controller
-        Requiere cabecera: X-API-KEY
-    end note
 ```
 
 ---
