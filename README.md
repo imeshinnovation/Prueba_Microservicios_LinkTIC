@@ -183,28 +183,102 @@ Ambos servicios pueden contenerizarse con Docker.
 ### Dockerfile (ejemplo básico)
 
 ```dockerfile
-FROM openjdk:17
-COPY target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+# Productos
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY target/productos-service-1.0.0.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Inventario
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY target/inventario-service-1.0.0.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
 ```
 
 ### docker-compose.yml (básico)
 
 ```yaml
-version: "3.8"
+
 services:
-  productos:
-    build: ./productos-service
+  postgres-productos:
+    image: postgres:13
+    container_name: postgres-productos
+    environment:
+      POSTGRES_DB: productos_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_productos_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  postgres-inventario:
+    image: postgres:13
+    container_name: postgres-inventario
+    environment:
+      POSTGRES_DB: inventario_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_inventario_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  productos-service:
+    build:
+      context: ./productos-service
+      dockerfile: Dockerfile
+    container_name: productos-service
     ports:
       - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-productos:5432/productos_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - postgres-productos
+    networks:
+      - microservices-network
 
-  inventario:
-    build: ./inventario-service
+  inventario-service:
+    build:
+      context: ./inventario-service
+      dockerfile: Dockerfile
+    container_name: inventario-service
     ports:
       - "8081:8081"
     environment:
-      - producto.service.url=http://productos:8080
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-inventario:5432/inventario_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - PRODUCTOS_SERVICE_URL=http://productos-service:8080
+    depends_on:
+      - postgres-inventario
+      - productos-service
+    networks:
+      - microservices-network
+
+volumes:
+  postgres_productos_data:
+  postgres_inventario_data:
+
+networks:
+  microservices-network:
+    driver: bridge
 ```
+---
+
+*Despliegue*
+- docker compose up -d --build
 
 ---
 
