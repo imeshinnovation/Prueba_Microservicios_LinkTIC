@@ -121,15 +121,15 @@ spring.jpa.show-sql=true
 
 ## 🧪 Endpoints REST
 
-### Productos Service (`http://localhost:8080`)
+### Productos Service (`http://localhost:8080/api`)
 
-- `POST /productos` – Crear producto
-- `GET /productos` – Listar productos
-- `GET /productos/{id}` – Obtener producto
-- `PUT /productos/{id}` – Actualizar producto
-- `DELETE /productos/{id}` – Eliminar producto
+- `POST /v1/productos` – Crear producto
+- `GET /v1/productos` – Listar productos
+- `GET /v1/productos/{id}` – Obtener producto
+- `PUT /v1/productos/{id}` – Actualizar producto
+- `DELETE /v1/productos/{id}` – Eliminar producto
 
-### Inventario Service (`http://localhost:8081`)
+### Inventario Service (`http://localhost:8081/api`)
 
 - `POST /v1/inventario/agregar` – Agregar stock
 - `POST /v1/inventario/compra` – Registrar compra
