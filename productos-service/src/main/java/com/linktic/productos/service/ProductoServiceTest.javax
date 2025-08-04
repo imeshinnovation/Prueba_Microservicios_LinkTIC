@@ -1,0 +1,97 @@
+package com.linktic.productos.service;
+
+import com.linktic.productos.exception.ProductoNotFoundException;
+import com.linktic.productos.model.Producto;
+import com.linktic.productos.repository.ProductoRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class ProductoServiceTest {
+
+    @Mock
+    private ProductoRepository productoRepository;
+
+    @InjectMocks
+    private ProductoService productoService;
+
+    private Producto producto;
+
+    @BeforeEach
+    void setUp() {
+        producto = new Producto("Producto Test", new BigDecimal("99.99"), "Descripción test");
+        producto.setId(1L);
+    }
+
+    @Test
+    void crearProducto_DeberiaRetornarProductoCreado() {
+        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
+
+        Producto resultado = productoService.crearProducto(producto);
+
+        assertNotNull(resultado);
+        assertEquals("Producto Test", resultado.getNombre());
+        assertEquals(0, resultado.getPrecio().compareTo(new BigDecimal("99.99")));
+        verify(productoRepository, times(1)).save(any(Producto.class));
+    }
+
+    @Test
+    void obtenerProductoPorId_ProductoExiste_DeberiaRetornarProducto() {
+        when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
+
+        Producto resultado = productoService.obtenerProductoPorId(1L);
+
+        assertNotNull(resultado);
+        assertEquals(1L, resultado.getId());
+        assertEquals("Producto Test", resultado.getNombre());
+        assertEquals(0, resultado.getPrecio().compareTo(new BigDecimal("99.99")));
+    }
+
+    @Test
+    void obtenerProductoPorId_ProductoNoExiste_DeberiaLanzarExcepcion() {
+        when(productoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        ProductoNotFoundException exception = assertThrows(
+                ProductoNotFoundException.class,
+                () -> productoService.obtenerProductoPorId(1L)
+        );
+
+        assertEquals("Producto con ID 1 no encontrado", exception.getMessage());
+    }
+
+    @Test
+    void crearProducto_DeberiaGuardarProductoCorrectamente() {
+        // Captor para verificar los valores que se pasan al repositorio
+        ArgumentCaptor<Producto> captor = ArgumentCaptor.forClass(Producto.class);
+        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
+
+        productoService.crearProducto(producto);
+
+        verify(productoRepository).save(captor.capture());
+        Producto guardado = captor.getValue();
+        assertEquals("Producto Test", guardado.getNombre());
+        assertEquals(0, guardado.getPrecio().compareTo(new BigDecimal("99.99")));
+    }
+
+    @Test
+    void crearProducto_Null_DeberiaLanzarIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> productoService.crearProducto(null)
+        );
+
+        assertEquals("El producto no puede ser null", exception.getMessage());
+    }
+}
