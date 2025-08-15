@@ -107,7 +107,7 @@ src/test/java/com/linktic/productos/integration/
 
 ## 👨‍💻 Autor
 
-Desarrollado por Alexander Rubio Cáceres, para Linktic.
+Desarrollado por Alexander Rubio Cáceres
 
 ---
 
