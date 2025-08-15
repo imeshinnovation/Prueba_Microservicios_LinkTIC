@@ -291,7 +291,7 @@ networks:
 
 ## 🧑‍💻 Autor
 
-Desarrollado por **Alexander Rubio Cáceres** para **Linktic**.
+Desarrollado por **Alexander Rubio Cáceres**.
 
 ---
 
