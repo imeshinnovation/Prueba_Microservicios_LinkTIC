@@ -100,4 +100,4 @@ Este proyecto está bajo licencia MIT. Puedes usarlo, modificarlo y distribuirlo
 
 ---
 
-Desarrollado por Alexander Rubio Cáceres, para Linktic
+Desarrollado por Alexander Rubio Cáceres
